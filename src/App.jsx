@@ -1,9 +1,10 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import routes from './router'
 import { ConfigProvider } from 'zarm'
 import zhCN from 'zarm/lib/config-provider/locale/zh_CN'
-import './App.css'
+
+import routes from './router'
+import NavBar from './components/NavBar'
 
 function App() {
   return <Router>
@@ -16,7 +17,7 @@ function App() {
         }
       </Switch>
     </ConfigProvider>
-
+    <NavBar />
   </Router>
 }
 
