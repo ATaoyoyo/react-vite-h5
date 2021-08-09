@@ -42,6 +42,7 @@ export default defineConfig({
   },
 
   server: {
+    open: true,
     proxy: {
       '/api': {
         target: 'http://api.chennick.wang/api/',
