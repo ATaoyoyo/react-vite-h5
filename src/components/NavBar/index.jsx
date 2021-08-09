@@ -1,29 +1,42 @@
 import React, { useState } from 'react'
-import PropType from 'prop-types'
+import PropTypes from 'prop-types'
+import { TabBar } from 'zarm'
 import { useHistory } from 'react-router-dom'
-import { TabBar, Icon } from 'zarm'
-
-import s from './style.modue.less'
+import CustomIcon from '../CustomIcon'
+import s from './style.module.less'
 
 const NavBar = ({ showNav }) => {
-  const [active, setActive] = useState('/')
+  const [activeKey, setActiveKey] = useState('/')
   const history = useHistory()
 
-  const changeTab = path => {
-    setActive(path)
+  const changeTab = (path) => {
+    setActiveKey(path)
     history.push(path)
   }
 
-
-  return <TabBar className={ s.tab } visible={ showNav } activeKey={ active } onChange={ changeTab }>
-    <TabBar.Item icon={ <Icon type="date" /> } itemKey="/" title="账单" />
-    <TabBar.Item icon={ <Icon type="date" /> } itemKey="/data" title="统计" />
-    <TabBar.Item icon={ <Icon type="date" /> } itemKey="/user" title="我的" />
-  </TabBar>
+  return (
+    <TabBar visible={ showNav } className={ s.tab } activeKey={ activeKey } onChange={ changeTab }>
+      <TabBar.Item
+        itemKey="/"
+        title="账单"
+        icon={ <CustomIcon type="zhangdan" /> }
+      />
+      <TabBar.Item
+        itemKey="/data"
+        title="统计"
+        icon={ <CustomIcon type="tongji" /> }
+      />
+      <TabBar.Item
+        itemKey="/user"
+        title="我的"
+        icon={ <CustomIcon type="wode" /> }
+      />
+    </TabBar>
+  )
 }
 
 NavBar.propTypes = {
-  showNav: PropType.bool
+  showNav: PropTypes.bool
 }
 
 export default NavBar
