@@ -14,7 +14,22 @@ const Login = () => {
   const [verify, setVerify] = useState('')
   const [captcha, setCaptcha] = useState('')
   // 登录
-  const handLogin = () => {}
+  const handLogin = async () => {
+    if (!username || !password) {
+      Toast.show('请填写用户名和密码')
+      return
+    }
+    try {
+      const { data, message } = await post('/user/login', {
+        username,
+        password,
+      })
+      Toast.show(message)
+      if (data) localStorage.setItem('TOKEN', data.token)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   // 注册
   const handRegister = async () => {
