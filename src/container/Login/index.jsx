@@ -3,8 +3,8 @@ import { Button, Cell, Checkbox, Input, Toast } from 'zarm'
 import Captcha from 'react-captcha-code/build/es'
 
 import CustomIcon from '/@/components/CustomIcon'
-import s from './style.module.less'
 import { post } from '../../utils'
+import './style.less'
 
 const Login = () => {
   const [checked, setChecked] = useState(true)
@@ -15,12 +15,11 @@ const Login = () => {
   const [captcha, setCaptcha] = useState('')
   // 登录
   const handLogin = async () => {
-    if (!username || !password) {
-      Toast.show('请填写用户名和密码')
-      return
-    }
+    const pass = verifyUserInfo()
+
+    if (!pass) return
     try {
-      const { data, message } = await post('/user/login', {
+      const { data, msg: message } = await post('/user/login', {
         username,
         password,
       })
@@ -33,15 +32,9 @@ const Login = () => {
 
   // 注册
   const handRegister = async () => {
-    if (!username || !password || !verify) {
-      Toast.show('请完善账号信息')
-      return
-    }
+    const pass = verifyUserInfo()
 
-    if (captcha !== verify) {
-      Toast.show('验证码错误')
-      return
-    }
+    if (!pass) return
 
     try {
       const { msg } = await post('/user/register', { username, password })
@@ -61,9 +54,25 @@ const Login = () => {
     setCaptcha(captcha)
   }, [])
 
+  // 验证
+  const verifyUserInfo = () => {
+    if (!username || !password || !verify) {
+      Toast.show('请填写用户名和密码')
+      return false
+    } else if (captcha !== verify) {
+      Toast.show('验证码错误')
+      return false
+    }
+
+    return true
+  }
+
   return (
-    <div className={s.login}>
+    <div className="login">
       <div className="pane">
+        <div className="login-bg">
+          <img src="/@/assets/img/loginBg.png" alt="" />
+        </div>
         <Cell title="" icon={<CustomIcon type="zhanghao" />}>
           <Input
             clearable
@@ -107,7 +116,7 @@ const Login = () => {
             登录
           </Button>
           <Button className="opt-btn" shadow block onClick={handRegister}>
-            没有账号？注册一个吧！
+            没有账号？立即注册！
           </Button>
         </div>
       </div>
