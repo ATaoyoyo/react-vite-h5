@@ -1,0 +1,83 @@
+.bill-item {
+  margin: 10px;
+  border-radius: 10px;
+  background-color: #fff;
+  //border: 1px solid #f1f1f1;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, .1);
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    height: 40px;
+    font-size: 20px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
+
+    &-date {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    &-bills {
+      display: flex;
+      font-size: 14px;
+
+      p {
+        display: flex;
+        align-items: center;
+        margin-right: 5px;
+
+        img {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+        }
+
+        span {
+          margin-left: 5px;
+          line-height: 20px;
+        }
+      }
+
+
+    }
+  }
+
+  &-pane {
+    &-type {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+
+      &-name {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        font-weight: bold;
+
+        i {
+          font-size: 28px;
+          color: #007fff;
+        }
+
+        span {
+          margin-left: 3px;
+          margin-top: 3px;
+        }
+      }
+
+      &-money {
+        font-size: 18px;
+        color: #ff0000;
+      }
+    }
+
+    &-time {
+      margin: 0;
+      padding: 0 10px 10px 10px;
+      font-size: 12px;
+    }
+  }
+}
