@@ -8,7 +8,7 @@ const instance = axios.create({
   withCredentials: true,
   headers: {
     'X-Request-With': 'XMLHttpRequest',
-    'Authorization': `${ localStorage.getItem('token') || null }`,
+    'Authorization': `${ localStorage.getItem('TOKEN') || null }`,
     post: { 'Content-Type': 'application/json' }
   },
 })
@@ -21,6 +21,7 @@ instance.interceptors.response.use(res => {
   if (res.data.code !== 200) {
     if (res.data.message) Toast.show(res.data.message)
     if (res.data.code === 401) {
+      Toast.show(res.data.msg)
       window.location.href = '/login'
       return new Promise.reject(res.data)
     }

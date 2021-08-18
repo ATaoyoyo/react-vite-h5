@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import { Cell } from 'zarm'
 import { useHistory } from 'react-router-dom'
 
-// import { typeMap } from '/@/utils'
+import { typeMap } from '/@/utils'
 import CustomIcon from '../CustomIcon'
 
 import './style.less'
@@ -55,19 +55,47 @@ const BillItem = ({ bill }) => {
         </div>
       </div>
 
-      <div className="bill-item-pane">
-        <div className="bill-item-pane-type">
-          <span className="bill-item-pane-type-name">
-            <CustomIcon type="canyin" />
-            <span>奖金</span>
-          </span>
-          <span className="bill-item-pane-type-money">
-            <CustomIcon />
-            <span>+5800.00</span>
-          </span>
-        </div>
-        <p className="bill-item-pane-time">22:00</p>
-      </div>
+      {bill &&
+        bill.bills.map((item) => (
+          <Cell
+            key={item.id}
+            onClick={() => handToDetail(item)}
+            title={
+              <>
+                <CustomIcon
+                  type={item.type_id ? typeMap[item.type_id].icon : 1}
+                />
+                <span>{item.type_name}</span>
+              </>
+            }
+            description={
+              <span className={item.type_id === 1 ? 'expense' : 'income'}>
+                {`${item.type_id === 1 ? '-' : '+'}`}
+                {item.amount}
+              </span>
+            }
+            help={
+              <div>
+                {dayjs(Number(item.date)).format('HH:mm')}
+                {item.remark ? `| ${item.remark}` : ''}
+              </div>
+            }
+          />
+        ))}
+
+      {/*<div className="bill-item-pane">*/}
+      {/*  <div className="bill-item-pane-type">*/}
+      {/*    <span className="bill-item-pane-type-name">*/}
+      {/*      <CustomIcon type="canyin" />*/}
+      {/*      <span>奖金</span>*/}
+      {/*    </span>*/}
+      {/*    <span className="bill-item-pane-type-money">*/}
+      {/*      <CustomIcon />*/}
+      {/*      <span>+5800.00</span>*/}
+      {/*    </span>*/}
+      {/*  </div>*/}
+      {/*  <p className="bill-item-pane-time">22:00</p>*/}
+      {/*</div>*/}
     </div>
   )
 }

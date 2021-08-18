@@ -1,9 +1,10 @@
 .bill-item {
-  margin: 10px;
+  //margin: 10px;
   border-radius: 10px;
   background-color: #fff;
   //border: 1px solid #f1f1f1;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, .1);
+  //overflow: hidden;
 
   &-header {
     display: flex;
@@ -44,6 +45,30 @@
 
     }
   }
+
+  .za-cell__title {
+    display: flex;
+    align-items: center;
+
+    .za-icon {
+      color: #007fff;
+    }
+
+    span {
+      color: #343434;
+    }
+  }
+
+  .za-cell__footer {
+    .income {
+      color: #ff0000;
+    }
+
+    .expense {
+      color: #39be77;
+    }
+  }
+
 
   &-pane {
     &-type {
