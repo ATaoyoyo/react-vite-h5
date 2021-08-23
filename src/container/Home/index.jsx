@@ -80,8 +80,8 @@ const Home = () => {
           <Pull
             animationDuration={200}
             stayTime={400}
-            refresh={{ state: refreshing, handle: refreshData }}
-            load={{ state: loading, handle: loadData, distance: 200 }}
+            refresh={{ state: refreshing, handler: refreshData }}
+            load={{ state: loading, handler: loadData, distance: 200 }}
           >
             {list.map((item) => (
               <BillItem bill={item} key={item.date} />
