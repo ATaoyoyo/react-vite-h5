@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Icon, Pull } from 'zarm'
 import dayjs from 'dayjs'
 
 import BillItem from '/@/components/BillItem'
+import PopupType from '/@/components/PopupType'
 import { get, REFRESH_STATE, LOAD_STATE } from '/@/utils'
 import './style.less'
 
 const Home = () => {
+  const typeRef = useRef()
   const [list, setList] = useState([]) // 账单列表
+  const [currentSelect, setCurrentSelect] = useState({}) // 当前筛选类型
   const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM')) // 当前时间
   const [page, setPage] = useState(1) //分页
   const [totalPage, setTotalPage] = useState() // 分页总数
@@ -47,6 +50,17 @@ const Home = () => {
     }
   }
 
+  const select = (item) => {
+    setRefreshing(REFRESH_STATE.loading)
+    // 触发刷新列表，将分页重制为 1
+    setPage(1)
+    setCurrentSelect(item)
+  }
+
+  const toggle = () => {
+    typeRef.current && typeRef.current.show()
+  }
+
   return (
     <div className="home">
       <div className="home-header">
@@ -61,7 +75,7 @@ const Home = () => {
 
         <div className="home-header-type-wrap">
           <div className="home-header-type-wrap-type">
-            <span className="label">
+            <span className="label" onClick={toggle}>
               <span>全部类型</span>
               <Icon type="arrow-bottom" />
             </span>
@@ -89,6 +103,7 @@ const Home = () => {
           </Pull>
         ) : null}
       </div>
+      <PopupType ref={typeRef} onSelect={select} />
     </div>
   )
 }
