@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames';
 import dayjs from 'dayjs'
 
 import { Cell } from 'zarm'
@@ -17,14 +18,14 @@ const BillItem = ({ bill }) => {
 
   useEffect(() => {
     const _income = bill.bills
-      .filter(({ pay_type }) => pay_type === 2)
+      .filter(({ pay_type }) => pay_type === '2')
       .reduce((cur, item) => {
         cur += Number(item.amount)
         return cur
       }, 0)
 
     const _expense = bill.bills
-      .filter(({ pay_type }) => pay_type === 1)
+      .filter(({ pay_type }) => pay_type === '1')
       .reduce((cur, item) => {
         cur += Number(item.amount)
         return cur
@@ -42,7 +43,7 @@ const BillItem = ({ bill }) => {
   return (
     <div className="bill-item">
       <div className="bill-item-header">
-        <span className="bill-item-header-date">2021-08-16</span>
+        <span className="bill-item-header-date">{bill.date}</span>
         <div className="bill-item-header-bills">
           <p className="bill-item-header-bills-expense">
             <img src="//s.yezgea02.com/1615953405599/zhi%402x.png" alt="支" />
@@ -69,33 +70,19 @@ const BillItem = ({ bill }) => {
               </>
             }
             description={
-              <span className={item.type_id === 1 ? 'expense' : 'income'}>
-                {`${item.type_id === 1 ? '-' : '+'}`}
+              <span className={item.pay_type === '1' ? 'expense' : 'income'}>
+                {`${item.pay_type === '1' ? '-' : '+'}`}
                 {item.amount}
               </span>
             }
             help={
               <div>
                 {dayjs(Number(item.date)).format('HH:mm')}
-                {item.remark ? `| ${item.remark}` : ''}
+                {item.remark ? ` | ${item.remark}` : ''}
               </div>
             }
           />
         ))}
-
-      {/*<div className="bill-item-pane">*/}
-      {/*  <div className="bill-item-pane-type">*/}
-      {/*    <span className="bill-item-pane-type-name">*/}
-      {/*      <CustomIcon type="canyin" />*/}
-      {/*      <span>奖金</span>*/}
-      {/*    </span>*/}
-      {/*    <span className="bill-item-pane-type-money">*/}
-      {/*      <CustomIcon />*/}
-      {/*      <span>+5800.00</span>*/}
-      {/*    </span>*/}
-      {/*  </div>*/}
-      {/*  <p className="bill-item-pane-time">22:00</p>*/}
-      {/*</div>*/}
     </div>
   )
 }

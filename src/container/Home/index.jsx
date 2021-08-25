@@ -4,12 +4,16 @@ import dayjs from 'dayjs'
 
 import BillItem from '/@/components/BillItem'
 import PopupType from '/@/components/PopupType'
+import PopupDate from '/@/components/PopupDate'
 import { get, REFRESH_STATE, LOAD_STATE } from '/@/utils'
 import './style.less'
 
 const Home = () => {
   const typeRef = useRef()
+  const monthRef = useRef()
   const [list, setList] = useState([]) // 账单列表
+  const [totalExpense, setTotalExpense] = useState(0) // 总支出
+  const [totalIncome, setTotalIncome] = useState(0) // 总收入
   const [currentSelect, setCurrentSelect] = useState({}) // 当前筛选类型
   const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM')) // 当前时间
   const [page, setPage] = useState(1) //分页
@@ -19,7 +23,7 @@ const Home = () => {
 
   useEffect(() => {
     getBillList()
-  }, [page])
+  }, [page, currentSelect, currentTime])
 
   // 请求账单列表
   const getBillList = async () => {
@@ -29,6 +33,8 @@ const Home = () => {
 
       page !== 1 ? setList(list.concat(data.list)) : setList(data.list)
       setTotalPage(data.totalPage)
+      setTotalExpense(data.totalExpense)
+      setTotalIncome(data.totalIncome)
       // 上滑加载状态
       setRefreshing(REFRESH_STATE.success)
       setLoading(LOAD_STATE.success)
@@ -57,8 +63,19 @@ const Home = () => {
     setCurrentSelect(item)
   }
 
+  const selectMonth = (item) => {
+    setRefreshing(REFRESH_STATE.loading)
+    setPage(1)
+    setCurrentTime(item)
+  }
+
   const toggle = () => {
     typeRef.current && typeRef.current.show()
+  }
+
+  // 选择月份弹窗
+  const monthToggle = () => {
+    monthRef.current && monthRef.current.show()
   }
 
   return (
@@ -66,23 +83,23 @@ const Home = () => {
       <div className="home-header">
         <div className="home-header-data-wrap">
           <span className="home-header-data-wrap-expense">
-            总支出： <b>¥ 200.00</b>
+            总支出： <b>¥ {totalExpense}</b>
           </span>
           <span className="home-header-data-wrap-income">
-            总收入： <b>¥ 200.00</b>
+            总收入： <b>¥ {totalIncome}</b>
           </span>
         </div>
 
         <div className="home-header-type-wrap">
           <div className="home-header-type-wrap-type">
             <span className="label" onClick={toggle}>
-              <span>全部类型</span>
+              <span>{currentSelect.name || '全部类型'}</span>
               <Icon type="arrow-bottom" />
             </span>
           </div>
           <div className="home-header-type-wrap-time">
-            <span className="time">
-              <span>2020-06</span>
+            <span className="time" onClick={monthToggle}>
+              <span>{currentTime}</span>
               <Icon type="arrow-bottom" />
             </span>
           </div>
@@ -104,6 +121,7 @@ const Home = () => {
         ) : null}
       </div>
       <PopupType ref={typeRef} onSelect={select} />
+      <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
     </div>
   )
 }
