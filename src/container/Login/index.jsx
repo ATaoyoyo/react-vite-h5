@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { Button, Cell, Checkbox, Input, Toast } from 'zarm'
+import { useHistory } from 'react-router-dom';
 import Captcha from 'react-captcha-code/build/es'
 
 import CustomIcon from '/@/components/CustomIcon'
@@ -13,18 +14,24 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [verify, setVerify] = useState('')
   const [captcha, setCaptcha] = useState('')
+
+  const history = useHistory()
+
   // 登录
   const handLogin = async () => {
     const pass = verifyUserInfo()
 
     if (!pass) return
     try {
-      const { data, msg: message } = await post('/user/login', {
+      const { data, message } = await post('/user/login', {
         username,
         password,
       })
       Toast.show(message)
-      if (data) localStorage.setItem('TOKEN', data.token)
+      if (data) {
+        localStorage.setItem('TOKEN', data)
+        history.push('/')
+      }
     } catch (e) {
       console.log(e)
     }
@@ -37,8 +44,8 @@ const Login = () => {
     if (!pass) return
 
     try {
-      const { msg } = await post('/user/register', { username, password })
-      Toast.show(msg)
+      const { message } = await post('/user/register', { username, password })
+      Toast.show(message)
     } catch (e) {
       console.log(e)
     }
