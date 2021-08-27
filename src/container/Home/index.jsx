@@ -5,6 +5,8 @@ import dayjs from 'dayjs'
 import BillItem from '/@/components/BillItem'
 import PopupType from '/@/components/PopupType'
 import PopupDate from '/@/components/PopupDate'
+import PopupAddBill from '/@/components/PopupAddBill';
+import CustomIcon from '/@/components/CustomIcon'
 import { get, REFRESH_STATE, LOAD_STATE } from '/@/utils'
 import './style.less'
 
@@ -78,6 +80,9 @@ const Home = () => {
     monthRef.current && monthRef.current.show()
   }
 
+  // 新增按钮点击
+  const handAddToggle = () => {}
+
   return (
     <div className="home">
       <div className="home-header">
@@ -120,8 +125,13 @@ const Home = () => {
           </Pull>
         ) : null}
       </div>
+
+      <div className='home-add-btn' onClick={handAddToggle}>
+        <CustomIcon type="tianjia" />
+      </div>
       <PopupType ref={typeRef} onSelect={select} />
       <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
+      <PopupAddBill />
     </div>
   )
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 import 'lib-flexible/flexible'
+import 'normalize.css/normalize.css'
 import './index.css'
 import App from './App'
 
