@@ -4,8 +4,10 @@
   background-color: #ffffff;
 
   &__close {
+    padding: 10px 0;
+    font-size: 14px;
     text-align: right;
-    color: #010101;
+    color: #333;
   }
 
   &__pay-type {
@@ -41,7 +43,6 @@
     }
   }
 
-
   &__date {
     padding: 5px 15px;
     color: #333;
@@ -68,6 +69,7 @@
 
   &__bill-types {
     margin: 10px;
+
     .list {
       display: flex;
       align-items: center;
@@ -99,6 +101,17 @@
           color: #333;
         }
       }
+    }
+  }
+
+  &__remark {
+    padding: 10px;
+    background-color: #fff;
+
+    .remark-input {
+      padding: 10px;
+      border: 1px solid #f5f5f5;
+      border-radius: 12px;
     }
   }
 }
