@@ -11,6 +11,7 @@ import './style.less'
 import { post } from '../../utils'
 
 const PopupAddBill = forwardRef((props, ref) => {
+  const { detail, onReload } = props
   const dateRef = useRef()
   const [payType, setPayType] = useState('expense')
   const [show, setShow] = useState(false)
@@ -29,40 +30,57 @@ const PopupAddBill = forwardRef((props, ref) => {
   }
 
   useEffect(() => {
-    const fetch = async () => {
-      const { data } = await get('/type/list')
-      const expense = data.filter((item) => item.type === '1')
-      const income = data.filter((item) => item.type === '2')
-      setExpenseType(expense)
-      setIncomeType(income)
-      setBillType(expense[0])
-    }
-    fetch()
-  }, [])
+    init()
+    getData()
+  }, [detail])
+
+  const init = () => {
+    if (!detail || !detail.id) return
+    setPayType(detail.pay_type === '1' ? 'expense' : 'income')
+    setBillType({ id: detail.id, name: detail.type_name })
+    setRemark(detail.remark)
+    setMoney(detail.amount)
+    setDate(dayjs(detail.date).format('MM-DD'))
+  }
+
+  const getData = async () => {
+    const { data } = await get('/type/list')
+    const expense = data.filter((item) => item.type === '1')
+    const income = data.filter((item) => item.type === '2')
+    setExpenseType(expense)
+    setIncomeType(income)
+    setBillType(expense[0])
+  }
 
   const addBill = async () => {
     if (!money) return Toast.show('请输入具体的金额')
     const params = {
+      id: detail.id || null,
       amount: Number(money).toFixed(2),
-      type_id: billType.id,
+      type_id: Number(billType.type),
       type_name: billType.name,
       pay_type: payType === 'income' ? '2' : '1',
-      date: dayjs(date).unix() * 1000, // 日期转时间戳
+      date: dayjs(date).format('YYYY-MM-DD HH:mm'), // 日期转时间戳
       remark: remark || '',
     }
 
-    const { message, code } = await post('/bill/add', params)
+    const api = detail.id ? '/bill/update' : '/bill/add'
+
+    const { message, code } = await post(api, params)
     if (code === 200) {
-      setMoney('')
-      setBillType(expenseType[0])
-      setPayType('expense')
-      setRemark('')
-      setShow(false)
-      setDate(new Date())
       Toast.show(message)
     }
 
-    if(props.onReload) props.onReload()
+    if (onReload) onReload()
+  }
+
+  const reset = () => {
+    setMoney('')
+    setBillType(expenseType[0])
+    setPayType('expense')
+    setRemark('')
+    setShow(false)
+    setDate(new Date())
   }
 
   // 金额输入

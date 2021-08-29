@@ -77,7 +77,7 @@ const BillItem = ({ bill }) => {
             }
             help={
               <div>
-                {dayjs(Number(item.date)).format('HH:mm')}
+                {dayjs(item.date).format('HH:mm')}
                 {item.remark ? ` | ${item.remark}` : ''}
               </div>
             }

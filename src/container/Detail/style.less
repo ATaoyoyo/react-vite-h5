@@ -1,0 +1,94 @@
+.detail {
+  height: 100%;
+  background-color: #f1f1f1;
+
+  &__card {
+    margin: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 12px;
+
+    &__type {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      text-align: center;
+
+      .expense, .income {
+        width: 25px;
+        height: 25px;
+        color: #ffffff;
+        border-radius: 50%;
+
+        .icon {
+          padding: 3px 0 0 1px;
+          font-size: 18px;
+          text-align: center;
+        }
+      }
+
+      .expense {
+        background-color: #007fff;
+      }
+
+      .income {
+        background-color: #ecbe25;
+      }
+
+      .name {
+        margin-left: 5px;
+      }
+    }
+
+
+    &__money {
+      margin: 0;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+
+      .expense {
+        color: #39be77;
+      }
+
+      .income {
+        color: #ff0000;
+      }
+    }
+
+    &__info {
+      font-size: 14px;
+
+      .label {
+        padding-right: 5px;
+        display: inline-block;
+        width: 65px;
+        text-align: left;
+        color: rgba(0, 0, 0, .5);
+      }
+
+      .value {
+        color: #313131;
+      }
+    }
+
+    &__opt {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+
+      span {
+        flex: 1;
+        text-align: center;
+        line-height: 1.5;
+        font-size: 16px;
+
+        &:nth-child(1) {
+          color: #ff0000;
+        }
+      }
+    }
+  }
+}
