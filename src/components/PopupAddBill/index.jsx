@@ -1,21 +1,25 @@
-import React, { forwardRef, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
-import { Icon, Input, Keyboard, Popup } from 'zarm'
+import { Icon, Input, Keyboard, Popup, Toast } from 'zarm'
 
 import CustomIcon from '/@/components/CustomIcon'
 import PopupDate from '/@/components/PopupDate'
+import { get, typeMap } from '/@/utils/index'
 import './style.less'
+import { post } from '../../utils'
 
 const PopupAddBill = forwardRef((props, ref) => {
   const dateRef = useRef()
   const [payType, setPayType] = useState('expense')
-  const [show, setShow] = useState(true)
+  const [show, setShow] = useState(false)
   const [date, setDate] = useState(new Date())
   const [money, setMoney] = useState('')
-  const [expenseType, setExpenseType] = useState('canyin')
-  const [incomeType, setIncomeType] = useState('gongzi')
+  const [expenseType, setExpenseType] = useState([])
+  const [incomeType, setIncomeType] = useState([])
+  const [billType, setBillType] = useState({})
+  const [remark, setRemark] = useState('')
 
   if (ref) {
     ref.current = {
@@ -24,9 +28,45 @@ const PopupAddBill = forwardRef((props, ref) => {
     }
   }
 
-  const handKeyClick = (key) => {
-    console.log(key)
+  useEffect(() => {
+    const fetch = async () => {
+      const { data } = await get('/type/list')
+      const expense = data.filter((item) => item.type === '1')
+      const income = data.filter((item) => item.type === '2')
+      setExpenseType(expense)
+      setIncomeType(income)
+      setBillType(expense[0])
+    }
+    fetch()
+  }, [])
 
+  const addBill = async () => {
+    if (!money) return Toast.show('请输入具体的金额')
+    const params = {
+      amount: Number(money).toFixed(2),
+      type_id: billType.id,
+      type_name: billType.name,
+      pay_type: payType === 'income' ? '2' : '1',
+      date: dayjs(date).unix() * 1000, // 日期转时间戳
+      remark: remark || '',
+    }
+
+    const { message, code } = await post('/bill/add', params)
+    if (code === 200) {
+      setMoney('')
+      setBillType(expenseType[0])
+      setPayType('expense')
+      setRemark('')
+      setShow(false)
+      setDate(new Date())
+      Toast.show(message)
+    }
+
+    if(props.onReload) props.onReload()
+  }
+
+  // 金额输入
+  const handKeyClick = (key) => {
     if (key === 'delete') {
       const val = money.slice(0, money.length - 1)
       setMoney(val)
@@ -34,9 +74,9 @@ const PopupAddBill = forwardRef((props, ref) => {
     }
 
     if (key === 'ok') {
+      addBill()
       return
     }
-
 
     const state =
       key !== '.' &&
@@ -51,9 +91,17 @@ const PopupAddBill = forwardRef((props, ref) => {
     setMoney(val)
   }
 
+  // 日期选择
   const handSelectDate = (date) => {
-    console.log(date)
     setDate(date)
+  }
+
+  // 支付类型切换
+  const handChangeType = (type) => {
+    setPayType(type)
+    type === 'expense'
+      ? setBillType(expenseType[0])
+      : setBillType(incomeType[0])
   }
 
   return (
@@ -75,7 +123,7 @@ const PopupAddBill = forwardRef((props, ref) => {
         <div className="popup-add-bill__wrapper__pay-type">
           <div className="popup-add-bill__wrapper__pay-types">
             <span
-              onClick={() => setPayType('expense')}
+              onClick={() => handChangeType('expense')}
               className={classNames('expense', {
                 active: payType === 'expense',
               })}
@@ -83,7 +131,7 @@ const PopupAddBill = forwardRef((props, ref) => {
               支出
             </span>
             <span
-              onClick={() => setPayType('income')}
+              onClick={() => handChangeType('income')}
               className={classNames('income', { active: payType === 'income' })}
             >
               收入
@@ -100,32 +148,55 @@ const PopupAddBill = forwardRef((props, ref) => {
           <PopupDate ref={dateRef} onSelect={handSelectDate} />
         </div>
 
+        {/*金额*/}
         <div className="popup-add-bill__wrapper__money">
           <span className="icon">¥</span>
           <span className="num">{money}</span>
         </div>
 
+        {/*账单类型*/}
         <div className="popup-add-bill__wrapper__bill-types">
           <ul className="list">
-            <li className="list-item">
-              <div className="icon">
-                <CustomIcon type="canyin" />
-              </div>
-              <span className="text">餐饮</span>
-            </li>
+            {(payType === 'expense' ? expenseType : incomeType).map((item) => {
+              return (
+                <li
+                  className={classNames('list-item', {
+                    income: payType === 'income',
+                    expense: payType === 'expense',
+                  })}
+                  key={item.id}
+                  onClick={() => setBillType(item)}
+                >
+                  <div
+                    className={classNames('icon', {
+                      active: billType.id === item.id,
+                    })}
+                  >
+                    <CustomIcon type={typeMap[item.id].icon} />
+                  </div>
+                  <span className="text">{item.name}</span>
+                </li>
+              )
+            })}
           </ul>
         </div>
       </div>
 
+      {/*备注*/}
       <div className="popup-add-bill__wrapper__remark">
         <Input
           className="remark-input"
           type="text"
-          rows={4}
-          placeholder="请输入备注"
+          showLength
+          rows={2}
+          value={remark}
+          maxLength={50}
+          placeholder="请输入备注..."
+          onChange={setRemark}
         />
       </div>
 
+      {/*数字键盘*/}
       <div className="popup-add-bill__wrapper__keyboard">
         <Keyboard type="price" onKeyClick={(key) => handKeyClick(key)} />
       </div>

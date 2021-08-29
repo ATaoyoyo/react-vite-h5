@@ -13,6 +13,7 @@ import './style.less'
 const Home = () => {
   const typeRef = useRef()
   const monthRef = useRef()
+  const billRef = useRef()
   const [list, setList] = useState([]) // 账单列表
   const [totalExpense, setTotalExpense] = useState(0) // 总支出
   const [totalIncome, setTotalIncome] = useState(0) // 总收入
@@ -65,6 +66,7 @@ const Home = () => {
     setCurrentSelect(item)
   }
 
+  // 月份选择
   const selectMonth = (item) => {
     setRefreshing(REFRESH_STATE.loading)
     setPage(1)
@@ -81,7 +83,9 @@ const Home = () => {
   }
 
   // 新增按钮点击
-  const handAddToggle = () => {}
+  const handAddToggle = () => {
+    billRef.current && billRef.current.show()
+  }
 
   return (
     <div className="home">
@@ -131,7 +135,7 @@ const Home = () => {
       </div>
       <PopupType ref={typeRef} onSelect={select} />
       <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
-      <PopupAddBill />
+      <PopupAddBill ref={billRef} onReload={refreshData} />
     </div>
   )
 }
