@@ -10,6 +10,8 @@ import { get, typeMap } from '../../utils'
 
 import './style.less'
 
+let chart = null // 图表实例
+
 const Data = () => {
   const dateRef = useRef()
 
@@ -22,6 +24,8 @@ const Data = () => {
 
   useEffect(() => {
     getData()
+
+    return () => chart.dispose()
   }, [month])
 
   const getData = async () => {
@@ -38,14 +42,55 @@ const Data = () => {
       setTotalIncome(totalIncome)
       setExpense(expenseData)
       setIncome(incomeData)
+      initChart(payType === 'expense' ? expenseData : incomeData)
     } catch (e) {
       console.log(e)
     }
   }
 
+  const initChart = (data) => {
+    if (!window.echarts) return
+    chart = echarts.init(document.getElementById('chart'))
+    chart.setOption({
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
+      },
+      legend: {
+        data: data.map((item) => item.type_name),
+      },
+      series: [
+        {
+          name: '支出',
+          type: 'pie',
+          radius: '55%',
+          data: data.map((item) => {
+            return {
+              value: item.number,
+              name: item.type_name,
+            }
+          }),
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+            },
+          },
+        },
+      ],
+    })
+  }
+
   // 日期选择
   const handSelectMonth = (item) => {
     setMonth(item)
+  }
+
+  // 收支切换
+  const handChangeType = (type) => {
+    setPayType(type)
+    initChart(type === 'expense' ? expense : income)
   }
 
   return (
@@ -66,7 +111,7 @@ const Data = () => {
           <span className="text">收支构成</span>
           <div className="opt">
             <span
-              onClick={() => setPayType('expense')}
+              onClick={() => handChangeType('expense')}
               className={classNames('expense', {
                 active: payType === 'expense',
               })}
@@ -74,7 +119,7 @@ const Data = () => {
               支出
             </span>
             <span
-              onClick={() => setPayType('income')}
+              onClick={() => handChangeType('income')}
               className={classNames('income', {
                 active: payType === 'income',
               })}
@@ -122,6 +167,8 @@ const Data = () => {
           </ul>
         </div>
       </div>
+
+      <div id="chart" />
 
       <PopupDate ref={dateRef} mode="month" onSelect={handSelectMonth} />
     </div>
