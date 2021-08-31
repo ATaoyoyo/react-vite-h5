@@ -40,7 +40,7 @@ const PopupAddBill = forwardRef((props, ref) => {
     setBillType({ id: detail.id, name: detail.type_name })
     setRemark(detail.remark)
     setMoney(detail.amount)
-    setDate(dayjs(detail.date).format('MM-DD'))
+    setDate(dayjs(detail.date).format('YYYY-MM-DD HH:mm'))
   }
 
   const getData = async () => {
@@ -55,20 +55,21 @@ const PopupAddBill = forwardRef((props, ref) => {
   const addBill = async () => {
     if (!money) return Toast.show('请输入具体的金额')
     const params = {
-      id: detail.id || null,
+      id: detail ? detail.id : null,
       amount: Number(money).toFixed(2),
-      type_id: Number(billType.type),
+      type_id: billType.id,
       type_name: billType.name,
       pay_type: payType === 'income' ? '2' : '1',
-      date: dayjs(date).format('YYYY-MM-DD HH:mm'), // 日期转时间戳
+      date: dayjs(date).format('YYYY-MM-DD HH:mm'),
       remark: remark || '',
     }
 
-    const api = detail.id ? '/bill/update' : '/bill/add'
+    const api = detail ? '/bill/update' : '/bill/add'
 
     const { message, code } = await post(api, params)
     if (code === 200) {
       Toast.show(message)
+      reset()
     }
 
     if (onReload) onReload()
