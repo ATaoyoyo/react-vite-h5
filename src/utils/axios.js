@@ -8,12 +8,18 @@ const instance = axios.create({
   withCredentials: true,
   headers: {
     'X-Request-With': 'XMLHttpRequest',
-    'Authorization': `${ localStorage.getItem('TOKEN') || null }`,
-    post: { 'Content-Type': 'application/json' }
+    Authorization: `${localStorage.getItem('TOKEN') || null}`,
+    post: { 'Content-Type': 'application/json' },
   },
 })
 
-instance.interceptors.response.use(res => {
+
+instance.interceptors.request.use(config => {
+  config.headers.Authorization = `${localStorage.getItem('TOKEN') || null}`
+  return config
+}, error => {})
+
+instance.interceptors.response.use((res) => {
   if (typeof res.data !== 'object') {
     Toast.show('服务端异常')
     return new Promise.reject(res)
@@ -29,6 +35,5 @@ instance.interceptors.response.use(res => {
 
   return res.data
 })
-
 
 export default instance
