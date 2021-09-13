@@ -102,8 +102,8 @@ const Data = () => {
           <Icon type="date" />
         </div>
         <p className="text">共支出</p>
-        <p className="amount">¥{'10000.00'}</p>
-        <p className="income">共收入¥{'9780.67'}</p>
+        <p className="amount">¥{totalExpense}</p>
+        <p className="income">共收入¥{totalIncome}</p>
       </div>
 
       <div className="data__amount-detail">

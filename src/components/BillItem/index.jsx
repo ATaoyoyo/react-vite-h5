@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames';
+import classNames from 'classnames'
 import dayjs from 'dayjs'
 
 import { Cell } from 'zarm'
@@ -64,6 +64,7 @@ const BillItem = ({ bill }) => {
             title={
               <>
                 <CustomIcon
+                  style={{ paddingRight: '5px' }}
                   type={item.type_id ? typeMap[item.type_id].icon : 1}
                 />
                 <span>{item.type_name}</span>
