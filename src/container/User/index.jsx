@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Cell } from 'zarm'
+import { Button, Cell } from 'zarm'
 
 import { get } from '../../utils'
 import './style.less'
@@ -21,6 +21,11 @@ const User = () => {
     } catch (e) {
       console.log(e)
     }
+  }
+
+  const handLogout = () => {
+    localStorage.clear()
+    window.location.href = '/login'
   }
 
   return (
@@ -76,6 +81,10 @@ const User = () => {
             }
           />
         </div>
+      </div>
+
+      <div className="user__logout">
+        <Button block theme="danger" onClick={handLogout}>退出登录</Button>
       </div>
     </div>
   )
