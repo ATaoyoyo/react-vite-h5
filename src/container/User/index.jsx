@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Button, Cell } from 'zarm'
+import { Button, Cell, Toast } from 'zarm'
 
 import { get } from '../../utils'
 import './style.less'
@@ -71,7 +71,7 @@ const User = () => {
           <Cell
             hasArrow
             title="关于我们"
-            onClick={() => history.push('/about')}
+            onClick={() => Toast.show('建设中...')}
             icon={
               <img
                 style={{ width: 20, verticalAlign: '-7px' }}
@@ -84,7 +84,9 @@ const User = () => {
       </div>
 
       <div className="user__logout">
-        <Button block theme="danger" onClick={handLogout}>退出登录</Button>
+        <Button block theme="danger" onClick={handLogout}>
+          退出登录
+        </Button>
       </div>
     </div>
   )
